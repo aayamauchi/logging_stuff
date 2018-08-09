@@ -1,0 +1,8 @@
+{
+  "from": 0,
+  "size": 15,
+  "search": "test",
+  "severity": ["HIGH", "LOW"],
+  "sortBy": "DATE",
+  "sortOrder": "ASC"
+}

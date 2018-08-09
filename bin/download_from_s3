@@ -1,0 +1,30 @@
+#!/bin/bash
+
+die() {
+    local exit_val=${1}
+    shift
+
+    if [ ${exit_val} -eq 0 ] ; then
+        echo "${*}"
+    else
+        echo "${*}" 1>&2
+    fi
+
+    exit ${exit_val}
+}
+
+if ! which ${0##*/} &>/dev/null ; then
+    if [ "${0}" =~ \/ ] ; then
+        export PATH=${PATH}${PATH+:}$( cd ${0%/*} ; echo ${PWD} )
+    else
+        die 1 Cannot local command path.
+    fi
+fi
+
+download_from_s3 &
+pid=${!}
+
+publisher &
+
+wait ${pid}
+publisher

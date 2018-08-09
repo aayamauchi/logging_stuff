@@ -1,0 +1,41 @@
+#!/bin/bash
+
+: ${ENVIRONMENT:=$( hostname -s | grep -oe '\<\(dev\|qa\|stg\|prd\)\>' )}
+
+: ${BUCKET_URI:=s3://plt-${ENVIRONMENT}-logging}
+: ${BUCKET_PATH_FORMAT:='/td-agent-*/%Y/%m/%d/%H/%M/*'}
+: ${OUTPUT_PATH:=${PWD}}
+
+: ${AWS_COMMAND:=$( which aws )}
+: ${AWS_REGION:=us-east-1}
+: ${AWS_PROFILE:=${ENVIRONMENT}}
+: ${AWS_OPTIONS:=--no-paginate}
+# ${S3_SYNC_OPTIONS:=--dryrun}
+
+s3_sync() {
+    ${AWS_COMMAND} \
+        ${AWS_OPTIONS} \
+        --profile ${AWS_PROFILE} \
+        --region ${AWS_REGION} \
+        s3 sync ${S3_SYNC_OPTIONS} --exclude='*' --include="${1}" \
+        ${BUCKET_URI} ${OUTPUT_PATH}
+}
+
+times=()
+
+while [ -n "${1}" ] ; do
+    if [[ "${1}" =~ ^[[:digit:]]\{1,\}$ ]] ; then
+        times+=(${1})
+    else
+        times+=($( date +%s --date="${1}" ))
+    fi
+    shift
+done
+
+if [ ${#times[@]} -lt 2 ] ; then
+    times[1]=$( date +%s )
+fi
+
+for ((curr=${times[0]};curr<=${times[1]};curr+=60)) ; do
+    s3_sync $( date +"${BUCKET_PATH_FORMAT}" --date=@${curr} )
+done

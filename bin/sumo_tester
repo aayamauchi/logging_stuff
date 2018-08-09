@@ -1,0 +1,15 @@
+#!/bin/bash
+
+api_url_format='https://api.us2.sumologic.com/api/v1/%s'
+
+#post_data="$(< /dev/stdin )"
+
+## Fuck.
+#curl -u "${1}:${2}" -X GET $( printf ${api_url_format} collectors )
+
+wget -q -O- \
+    --http-user="${1}" \
+    --http-password="${2}" \
+    --method=GET $( printf ${api_url_format} collectors )
+
+#    --auth-no-challenge \

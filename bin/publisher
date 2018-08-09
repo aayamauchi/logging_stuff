@@ -1,0 +1,14 @@
+#!/bin/bash
+
+: ${OUTPUT_PATH:=${PWD}}
+
+while true ; do
+    if [ $( ls -d ${OUTPUT_PATH}/* | wc -l ) -gt 1 ] ; then
+        path=$( ls -d ${OUTPUT_PATH}/* | head -n1 )
+        for f in $( find ${path} -type f -name '*.gelf' ) ; do
+            nc localhost 12202 < ${f}
+        done
+        rm -rf ${path}
+    fi
+    sleep 10
+done

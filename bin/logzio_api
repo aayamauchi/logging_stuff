@@ -1,0 +1,94 @@
+#!/usr/bin/env python2.7
+
+import json
+import requests
+import sys
+from time import time
+from argparse import ArgumentParser
+import re
+
+api_url_format = 'https://api.logz.io/v1/%s'
+
+
+
+parser = ArgumentParser(description='Push Fluentd metrics to Stackdriver')
+parser.add_argument(
+    '--stackdriver-apikey',
+    dest='api_key',
+    help='Stackdriver API key (required)',
+    required=True
+)
+parser.add_argument(
+    '--instance-id',
+    dest='instance_id',
+    help='AWS Instance ID for metrics association (defaults to None)',
+    default=None
+)
+parser.add_argument(
+    '--metrics-prefix',
+    dest='metrics_prefix',
+    help='PreFix to use in forming the Stackdriver metric names (defaults to "infra.fluentd")',
+    default='infra.fluentd'
+)
+parser.add_argument(
+    '--fluentd-url',
+    dest='fluentd_url',
+    help='Fluentd monitor_agent URL (defaults to "http://localhost:24220/api/plugins.json")',
+    default='http://localhost:24220/api/plugins.json'
+)
+parser.add_argument(
+    '--stackdriver-url',
+    dest='stackdriver_url',
+    help='Fluentd monitor_agent URL (defaults to "https://custom-gateway.stackdriver.com/v1/custom"',
+    default='https://custom-gateway.stackdriver.com/v1/custom'
+)
+
+arg = parser.parse_args()
+
+timestamp = int(time())
+
+resp = requests.get(arg.fluentd_url)
+
+if not resp.ok:
+    sys.stderr.write(resp.content + '\n')
+
+try:
+    buffered_output = dict(
+        [ (re.search(r'\w+',x['config']['buffer_path'].split('/')[-1]).group(0),x) for x in  json.loads(resp.text)['plugins'] if x['output_plugin'] and 'buffer_queue_length' in x ]
+    )
+except:
+    sys.stderr.write('Invalid response format.\n')
+    sys.exit(3)
+
+headers = {
+    'content-type': 'application/json',
+    'x-stackdriver-apikey': arg.api_key
+}
+
+gateway_msg = {
+    'timestamp': int(time()),
+    'proto_version': 1,
+    'data': []
+}
+
+for buffer_name in buffered_output:
+    for k in buffered_output[buffer_name]:
+        if not type(buffered_output[buffer_name][k]) is int:
+            continue
+        gateway_msg['data'].append(
+            {
+                'name': '%s.%s.%s' %(arg.metrics_prefix,buffer_name,k),
+                'value': buffered_output[buffer_name][k],
+                'collected_at': timestamp,
+                'instance': arg.instance_id
+            }
+        )
+
+resp = requests.post(
+    arg.stackdriver_url,
+    data=json.dumps(gateway_msg),
+    headers=headers)
+
+if not resp.ok:
+    sys.stderr.write(resp.content + '\n')
+#sys.stdout.write(json.dumps(gateway_msg,indent=2,sort_keys=True))

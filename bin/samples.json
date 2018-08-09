@@ -1,0 +1,135 @@
+{
+   "kibana" : {
+      "override" : true,
+      "kibanaVersion" : "4.0.0-beta3",
+      "hits" : [
+         {
+            "_id" : "c245e530-fc60-11e7-b120-5320b1759c57",
+            "_score" : 1,
+            "_source" : {
+               "columns" : [
+                  "message"
+               ],
+               "title" : "example-saved-query",
+               "_createdAt" : 1516287816456,
+               "description" : "",
+               "kibanaSavedObjectMeta" : {
+                  "searchSourceJSON" : "{\"index\":\"[logzioCustomerIndex]YYMMDD\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"example-saved-query\"}},\"filter\":[]}"
+               },
+               "sort" : [
+                  "@timestamp",
+                  "desc"
+               ],
+               "_updatedAt" : 1516287816456,
+               "_updatedBy" : {
+                  "username" : "testadmin@logz.io",
+                  "fullName" : "testadmin@logz.io",
+                  "userId" : 1
+               },
+               "_createdBy" : {
+                  "userId" : 1,
+                  "username" : "testadmin@logz.io",
+                  "fullName" : "testadmin@logz.io"
+               },
+               "hits" : 0,
+               "version" : 1
+            },
+            "_type" : "search",
+            "_index" : "logzioCustomerKibanaIndex"
+         }
+      ]
+   },
+   "user-management" : {
+      "accountID" : 4,
+      "username" : "example@a.com",
+      "fullName" : "example",
+      "roles" : [
+         3
+      ]
+   },
+   "audit-trail" : {
+      "pageSize" : 15,
+      "auditEventUsersList" : [
+         {
+            "deleted" : false,
+            "fullName" : "testadmin@logz.io",
+            "userToken" : false,
+            "id" : 1
+         }
+      ],
+      "total" : 1,
+      "auditEventTypesList" : [
+         {
+            "auditEventType" : "ADD_USER",
+            "auditEventTypeTitle" : "Added user"
+         }
+      ],
+      "results" : [
+         {
+            "ip" : null,
+            "auditEventUser" : {
+               "deleted" : false,
+               "fullName" : "testadmin@logz.io",
+               "id" : 1,
+               "userToken" : false
+            },
+            "geoLocation" : null,
+            "extraDataList" : [
+               {
+                  "fieldName" : "Name",
+                  "newValue" : "a@a.com",
+                  "oldValue" : null
+               }
+            ],
+            "date" : 1516538068641,
+            "auditEventTypeTitle" : "Added user",
+            "valid" : true
+         }
+      ],
+      "from" : 0
+   },
+   "endpoints" : {
+      "bodyTemplate" : {
+         "alert_title" : "{{alert_title}}"
+      },
+      "title" : "custom-example-endpoint",
+      "description" : "This is an example endpoint",
+      "url" : "http://www.custom.com",
+      "endpointType" : "Custom",
+      "headers" : "header=header-value",
+      "method" : "POST",
+      "id" : 4
+   },
+   "snapshotter" : {
+      "endpoints" : [
+         3
+      ],
+      "snapshotType" : "VISUALIZATION",
+      "timeFrameTo" : "2018-02-08T09:43:01.188Z",
+      "snapshotTimeZone" : "Asia/Jerusalem",
+      "message" : "This is an example message",
+      "timeFrameFrom" : "2018-02-08T09:28:01.187Z",
+      "queryString" : "type:example",
+      "snapshotSavedObjectId" : "example-visualization",
+      "emails" : [
+         "example-mail@logz.io"
+      ],
+      "darkTheme" : true
+   },
+   "account-management" : {
+      "accountName" : "example",
+      "searchable" : true,
+      "retentionDays" : 5,
+      "utilizationSettings" : {
+         "utilizationEnabled" : true,
+         "frequencyMinutes" : 0
+      },
+      "maxDailyGB" : 1,
+      "accessible" : true,
+      "sharingObjectsAccounts" : [
+         4
+      ],
+      "email" : "example@a.com",
+      "docSizeSetting" : true
+   }
+}

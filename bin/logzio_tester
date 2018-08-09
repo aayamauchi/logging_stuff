@@ -1,0 +1,13 @@
+#!/bin/bash
+
+api_url_format='https://api.logz.io/v1/%s'
+#api_url_format='https://api.logz.io/v1/%s?api_key=%s'
+
+#wget -S -O- --header "X-API-TOKEN: ${1}" $( printf "${api_url_format}" time-based-accounts )
+#wget -S -O- $( printf "${api_url_format}" time-based-accounts ${1} )
+
+post_data="$(< /dev/stdin )"
+wget --method=POST $( printf ${api_url_format} alerts/triggered-alerts ) \
+  --header="X-API-TOKEN: ${1}" \
+  --header="Content-Type: application/json" \
+  --body-data="${1}"

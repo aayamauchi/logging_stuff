@@ -1,0 +1,32 @@
+{        "title": "Error level logs",
+        "description": "Capture ERROR level logs in the given time range",
+        "query_string": "loglevel:ERROR",
+        "filter": "{\"bool\":{\"must\":[{\"match\":{\"type\":\"mytype\"}}],\"must_not\":[]}}",
+        "operation": "GREATER_THAN",
+        "severityThresholdTiers": [{
+        	    "severity": "HIGH",
+        	    "threshold": 2
+        	},
+        	{
+        	    "severity": "MEDIUM",
+       		    "threshold": 1
+        	},
+        	{
+        	    "severity": "LOW",
+       		    "threshold": 0
+        	}
+        ],
+        "searchTimeFrameMinutes": 5,
+        "notificationEmails": [
+          "alerts@my.organization.com"
+        ],
+        "isEnabled": true,
+        "suppressNotificationsMinutes": 0,
+        "valueAggregationType": "NONE",
+        "valueAggregationField": null,
+        "groupByAggregationFields": [],
+        "alertNotificationEndpoints": [
+      	    0
+        ]
+      }
+
